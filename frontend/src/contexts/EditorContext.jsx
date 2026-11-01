@@ -29,7 +29,14 @@ const getInitialPageStructure = () => ({
     body: [],
 });
 
-export const EditorProvider = ({ children, showAlert }) => {
+export const EditorProvider = ({ children, showAlert: externalShowAlert }) => {
+    const showAlert = useCallback((msg, type) => {
+        if (typeof externalShowAlert === "function") {
+            externalShowAlert(msg, type);
+        } else {
+            console.log(`[Alert - ${type || "info"}]:`, msg);
+        }
+    }, [externalShowAlert]);
     const [allBlocks, setAllBlocks] = useState([]);
     const [branding, setBranding] = useState(null);
     const [pages, setPages] = useState([]);
@@ -376,3 +383,4 @@ export const EditorProvider = ({ children, showAlert }) => {
     
     return <EditorContext.Provider value={value}>{children}</EditorContext.Provider>;
 };
+
