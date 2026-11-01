@@ -86,3 +86,4 @@ export const TenantProvider = ({ children, initialTenantData }) => {
         </TenantContext.Provider>
     );
 };
+
