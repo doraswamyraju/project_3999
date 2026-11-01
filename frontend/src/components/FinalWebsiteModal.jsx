@@ -1,6 +1,6 @@
 // src/components/FinalWebsiteModal.jsx
 import React, { useState } from 'react';
-import { useEditor } from '../contexts/EditorContext.jsx';
+import { useEditor, SECTION_ORDER } from '../contexts/EditorContext.jsx';
 import BlockRenderer from './BlockRenderer.jsx';
 import { Laptop, Smartphone, X, CheckCircle, Sparkles } from 'lucide-react';
 
@@ -10,8 +10,8 @@ export default function FinalWebsiteModal({ isOpen, onClose }) {
 
     if (!isOpen) return null;
 
-    // Ordered sections to render
-    const sectionsToRender = ['header', 'hero', 'aboutUs', 'services', 'testimonials', 'footer'];
+    // Use master SECTION_ORDER
+    const sectionsToRender = SECTION_ORDER || ['header', 'hero', 'aboutUs', 'services', 'testimonials', 'footer'];
 
     return (
         <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-6">
@@ -34,7 +34,7 @@ export default function FinalWebsiteModal({ isOpen, onClose }) {
                             <button
                                 onClick={() => setDeviceType('desktop')}
                                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
-                                    deviceType === 'desktop' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
+                                    deviceType === 'desktop' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'
                                 }`}
                             >
                                 <Laptop className="w-4 h-4" />
@@ -43,7 +43,7 @@ export default function FinalWebsiteModal({ isOpen, onClose }) {
                             <button
                                 onClick={() => setDeviceType('mobile')}
                                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
-                                    deviceType === 'mobile' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
+                                    deviceType === 'mobile' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'
                                 }`}
                             >
                                 <Smartphone className="w-4 h-4" />
@@ -61,49 +61,95 @@ export default function FinalWebsiteModal({ isOpen, onClose }) {
                 </div>
 
                 {/* Website Canvas Area */}
-                <div className="flex-1 bg-slate-100 overflow-y-auto flex justify-center p-4">
-                    <div
-                        className={`bg-white shadow-2xl transition-all duration-300 min-h-full ${
-                            deviceType === 'desktop'
-                                ? 'w-full'
-                                : 'w-[400px] border-8 border-slate-800 rounded-[2.5rem] my-4 overflow-hidden'
-                        }`}
-                    >
-                        {sectionsToRender.map((secKey) => {
-                            const blockInstance = pageStructure[secKey];
-                            if (!blockInstance || blockInstance === 'excluded') return null;
+                <div className="flex-1 bg-slate-100 overflow-y-auto flex justify-center items-start p-4">
+                    {deviceType === 'desktop' ? (
+                        <div className="bg-white shadow-xl w-full min-h-full">
+                            {sectionsToRender.map((secKey) => {
+                                const blockInstance = pageStructure[secKey];
+                                if (!blockInstance || blockInstance === 'excluded') return null;
 
-                            const blockDef = allBlocks.find(b => b.id === blockInstance.blockId);
-                            if (!blockDef) return null;
+                                const blockDef = allBlocks.find(b => b.name === blockInstance.variant || b.id === blockInstance.blockId);
+                                if (!blockDef) return null;
 
-                            return (
-                                <section key={secKey} id={`final-section-${secKey}`}>
-                                    <BlockRenderer
-                                        blockDef={blockDef}
-                                        content={blockInstance.data}
-                                        previewMode={deviceType}
-                                        isPreview={true}
-                                    />
-                                </section>
-                            );
-                        })}
+                                return (
+                                    <section key={secKey} id={`final-section-${secKey}`}>
+                                        <BlockRenderer
+                                            blockDef={blockDef}
+                                            content={blockInstance.data}
+                                            previewMode="desktop"
+                                            isPreview={true}
+                                        />
+                                    </section>
+                                );
+                            })}
 
-                        {/* Render body blocks if any */}
-                        {Array.isArray(pageStructure.body) && pageStructure.body.map((item, idx) => {
-                            const blockDef = allBlocks.find(b => b.id === item.blockId);
-                            if (!blockDef) return null;
-                            return (
-                                <section key={`body-${idx}`}>
-                                    <BlockRenderer
-                                        blockDef={blockDef}
-                                        content={item.data}
-                                        previewMode={deviceType}
-                                        isPreview={true}
-                                    />
-                                </section>
-                            );
-                        })}
-                    </div>
+                            {/* Render body blocks if any */}
+                            {Array.isArray(pageStructure.body) && pageStructure.body.map((item, idx) => {
+                                const blockDef = allBlocks.find(b => b.name === item.variant || b.id === item.blockId);
+                                if (!blockDef) return null;
+                                return (
+                                    <section key={`body-${idx}`}>
+                                        <BlockRenderer
+                                            blockDef={blockDef}
+                                            content={item.data}
+                                            previewMode="desktop"
+                                            isPreview={true}
+                                        />
+                                    </section>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        /* Mobile Mockup Device Frame */
+                        <div className="my-2 flex justify-center">
+                            <div className="relative border-slate-800 bg-slate-900 border-[12px] rounded-[3rem] w-[375px] h-[720px] shadow-2xl flex flex-col overflow-hidden">
+                                {/* Speaker notch */}
+                                <div className="h-6 bg-slate-900 flex justify-center items-center flex-shrink-0 z-20">
+                                    <div className="w-20 h-3 bg-slate-800 rounded-full" />
+                                </div>
+                                {/* Mobile screen inner viewport */}
+                                <div className="flex-1 overflow-y-auto bg-white">
+                                    {sectionsToRender.map((secKey) => {
+                                        const blockInstance = pageStructure[secKey];
+                                        if (!blockInstance || blockInstance === 'excluded') return null;
+
+                                        const blockDef = allBlocks.find(b => b.name === blockInstance.variant || b.id === blockInstance.blockId);
+                                        if (!blockDef) return null;
+
+                                        return (
+                                            <section key={secKey} id={`final-mobile-section-${secKey}`}>
+                                                <BlockRenderer
+                                                    blockDef={blockDef}
+                                                    content={blockInstance.data}
+                                                    previewMode="mobile"
+                                                    isPreview={true}
+                                                />
+                                            </section>
+                                        );
+                                    })}
+
+                                    {Array.isArray(pageStructure.body) && pageStructure.body.map((item, idx) => {
+                                        const blockDef = allBlocks.find(b => b.name === item.variant || b.id === item.blockId);
+                                        if (!blockDef) return null;
+                                        return (
+                                            <section key={`mobile-body-${idx}`}>
+                                                <BlockRenderer
+                                                    blockDef={blockDef}
+                                                    content={item.data}
+                                                    previewMode="mobile"
+                                                    isPreview={true}
+                                                />
+                                            </section>
+                                        );
+                                    })}
+                                </div>
+                                {/* Bottom navigation indicator */}
+                                <div className="h-4 bg-slate-900 flex justify-center items-center flex-shrink-0 z-20">
+                                    <div className="w-24 h-1 bg-slate-700 rounded-full" />
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Footer Action Bar */}
@@ -131,4 +177,3 @@ export default function FinalWebsiteModal({ isOpen, onClose }) {
         </div>
     );
 }
-
