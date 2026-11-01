@@ -1,7 +1,7 @@
 // src/App.js
 import React from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { BrandingProvider } from './contexts/BrandingContext.jsx';
+import { TenantProvider } from './contexts/TenantContext.jsx';
 import { EditorProvider } from './contexts/EditorContext.jsx';
 import Login from './pages/auth/Login';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -20,11 +20,11 @@ function MainRouter() {
     }
 
     return (
-        <BrandingProvider>
+        <TenantProvider>
             <EditorProvider>
                 <AppContent />
             </EditorProvider>
-        </BrandingProvider>
+        </TenantProvider>
     );
 }
 

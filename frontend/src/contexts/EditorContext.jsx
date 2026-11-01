@@ -3,6 +3,7 @@
 import React, { createContext, useState, useEffect, useContext, useMemo, useCallback } from 'react';
 import Spinner from '../components/Spinner.jsx'; // Reverted import path
 import { v4 as uuidv4 } from 'uuid';
+import { useTenant } from './TenantContext.jsx';
 import { getServicesRegistry } from '../registries/servicesRegistry.jsx'; // Reverted import path
 import { getHeadersRegistry } from '../registries/headerRegistry.jsx'; // Reverted import path
 import { getHeroRegistry } from '../registries/heroRegistry.jsx'; // Reverted import path
@@ -30,6 +31,7 @@ const getInitialPageStructure = () => ({
 });
 
 export const EditorProvider = ({ children, showAlert: externalShowAlert }) => {
+    const { tenantData, business: tenantBiz, services: tenantServices, products: tenantProducts } = useTenant();
     const showAlert = useCallback((msg, type) => {
         if (typeof externalShowAlert === "function") {
             externalShowAlert(msg, type);
@@ -170,7 +172,7 @@ export const EditorProvider = ({ children, showAlert: externalShowAlert }) => {
     const getInitialContent = useCallback((blockDef) => {
         const category = blockDef.category.toLowerCase().replace(/\s+/g, '');
         const variant = blockDef.name;
-        const b = branding || { logo_url: "https://placehold.co/150x50/4F46E5/FFFFFF?text=Logo", business_name: "Innovate Inc.", phone_number: "+1 (555) 123-4567", email: "contact@innovate.com" };
+        const b = tenantBiz || branding || { logo_url: 'http://localhost:3000/logo.png', business_name: 'My Business', phone_number: '+91 80085 30606', email: 'contact@manacity.in', tagline: 'Quality solutions', whatsapp: '+918008530606' };
         
         // About Us Defaults
         const defaultFeatures = [
@@ -193,8 +195,14 @@ export const EditorProvider = ({ children, showAlert: externalShowAlert }) => {
             case 'header': 
                 return { logoUrl: b.logo_url, companyName: b.business_name, phoneNumber: b.phone_number, emailAddress: b.email, services: ["Home", "About", "Services", "Contact"] };
             
-            case 'hero': 
-                return { heading: "Build Your Future With Us", subheading: "We provide the best solutions for your business.", ctaText: "Get Started", image: "https://placehold.co/1920x1080/E0E0E0/333333?text=Hero+Image" };
+            case 'hero':
+                return {
+                    heading: b.business_name || b.name || 'Build Your Future With Us',
+                    subheading: b.tagline || 'Leading products & reliable services in your city.',
+                    ctaText: 'Contact Us',
+                    ctaLink: b.whatsapp ? ('https://wa.me/' + String(b.whatsapp).replace(/[^0-9]/g, '')) : '#contact',
+                    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600'
+                };
             
             case 'aboutus': 
                 switch(variant) {
@@ -252,14 +260,14 @@ export const EditorProvider = ({ children, showAlert: externalShowAlert }) => {
                             serviceMotto: "Our Services", 
                             mainTitle: "Everything You Need to Grow Online", 
                             description: "We offer a complete suite of digital marketing services to help your business succeed.", 
-                            services: defaultServiceCards, // Array of {title, description, icon}
+                            services: (tenantServices && tenantServices.length > 0) ? tenantServices.map(s => ({ title: s.title, description: s.description, icon: s.icon || 'Briefcase' })) : defaultServiceCards, // Array of {title, description, icon}
                         };
                     case 'Services 2':
                         return {
                             serviceMotto: "Our Services",
                             mainTitle: "A Partnership for Growth",
                             description: "We provide a full spectrum of digital marketing services. Select a service to learn more.",
-                            services: defaultServiceCardsWithImage, // Array of {title, description, icon, image}
+                            services: (tenantServices && tenantServices.length > 0) ? tenantServices.map(s => ({ title: s.title, description: s.description, icon: s.icon || 'Briefcase', image: s.image_url || 'https://images.unsplash.com/photo-1556742049-0a67c5574f73?w=600' })) : defaultServiceCardsWithImage, // Array of {title, description, icon, image}
                         };
                     case 'Services 3':
                         return {
@@ -383,4 +391,7 @@ export const EditorProvider = ({ children, showAlert: externalShowAlert }) => {
     
     return <EditorContext.Provider value={value}>{children}</EditorContext.Provider>;
 };
+
+
+
 
