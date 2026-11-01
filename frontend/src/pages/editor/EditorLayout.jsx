@@ -1,9 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { EditorProvider, useEditor } from '../../contexts/EditorContext.jsx';
+import { useEditor } from '../../contexts/EditorContext.jsx';
 import Sidebar from '../../components/shared/Sidebar.jsx';
 import BlockSelector from './BlockSelector.jsx';
 import LivePreviewPane from './LivePreviewPane.jsx';
 import Spinner from '../../components/Spinner.jsx';
+import FinalWebsiteModal from '../../components/FinalWebsiteModal.jsx';
 
 const ChevronUpIcon = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
@@ -12,7 +13,7 @@ const ChevronUpIcon = (props) => (
 );
 
 const EditorContent = ({ showAlert }) => {
-    const { pageStructure, masterRegistry } = useEditor();
+    const { pageStructure, masterRegistry, isFinalModalOpen, closeFinalModal } = useEditor();
     const [showScrollTop, setShowScrollTop] = useState(false);
     const mainContentRef = useRef(null);
 
@@ -43,6 +44,12 @@ const EditorContent = ({ showAlert }) => {
                     <ChevronUpIcon className="w-6 h-6" />
                 </button>
             )}
+
+            {/* Final Assembled Website Modal */}
+            <FinalWebsiteModal
+                isOpen={isFinalModalOpen}
+                onClose={closeFinalModal}
+            />
         </div>
     );
 };
@@ -51,18 +58,16 @@ function EditorLayout({ showAlert }) {
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(true);
 
   return (
-    <EditorProvider showAlert={showAlert}>
-      <div className="flex h-screen bg-gray-100 font-sans">
-        <Sidebar 
-          isCollapsed={isSidebarCollapsed}
-          onMouseEnter={() => setSidebarCollapsed(false)}
-          onMouseLeave={() => setSidebarCollapsed(true)}
-        />
-        <main className="flex-1 flex flex-col overflow-hidden">
-           <EditorContent showAlert={showAlert} />
-        </main>
-      </div>
-    </EditorProvider>
+    <div className="flex h-screen bg-gray-100 font-sans">
+      <Sidebar 
+        isCollapsed={isSidebarCollapsed}
+        onMouseEnter={() => setSidebarCollapsed(false)}
+        onMouseLeave={() => setSidebarCollapsed(true)}
+      />
+      <main className="flex-1 flex flex-col overflow-hidden">
+         <EditorContent showAlert={showAlert} />
+      </main>
+    </div>
   );
 }
 

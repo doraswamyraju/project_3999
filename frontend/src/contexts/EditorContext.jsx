@@ -40,7 +40,7 @@ export const EditorProvider = ({ children, showAlert }) => {
     const [pageStructure, setPageStructure] = useState(getInitialPageStructure());
     const [currentSection, setCurrentSection] = useState(SECTION_ORDER[0]);
     const [editingBlock, setEditingBlock] = useState(null);
-    const [isInFocusMode, setIsInFocusMode] = useState(false);
+    const [isInFocusMode, setIsInFocusMode] = useState(false); const [isFinalModalOpen, setIsFinalModalOpen] = useState(false);
     
     const [masterRegistryState, setMasterRegistryState] = useState(null);
 
@@ -310,10 +310,7 @@ export const EditorProvider = ({ children, showAlert }) => {
         advanceToNextSection();
     }, [currentSection, advanceToNextSection, showAlert]);
 
-    const finalizePage = () => {
-        showAlert("Showing final page summary...", 'info');
-        console.log("Final Page Structure for page ID", currentPageId, ":", pageStructure);
-    };
+    const finalizePage = () => { setIsFinalModalOpen(true); }; const closeFinalModal = () => { setIsFinalModalOpen(false); };
 
     const enterFocusMode = useCallback((blockDef) => {
         // When entering focus mode, use a deep copy of the initial content/data
@@ -360,7 +357,7 @@ export const EditorProvider = ({ children, showAlert }) => {
         pageStructure,
         currentSection, setCurrentSection, 
         isInFocusMode, editingBlock,
-        selectBlockForSection, skipSection, finalizePage,
+        selectBlockForSection, skipSection, finalizePage, isFinalModalOpen, closeFinalModal,
         enterFocusMode, exitFocusMode, updateTempContent, saveCustomizationAndProceed,
         addBlockAndProceed, addBlockToBody
     }), [
@@ -368,7 +365,7 @@ export const EditorProvider = ({ children, showAlert }) => {
         pages, currentPage, handleSetCurrentPage, 
         pageStructure,
         currentSection, isInFocusMode, editingBlock,
-        selectBlockForSection, skipSection, finalizePage, enterFocusMode, updateTempContent, saveCustomizationAndProceed,
+        selectBlockForSection, skipSection, finalizePage, isFinalModalOpen, closeFinalModal, enterFocusMode, updateTempContent, saveCustomizationAndProceed,
         addBlockAndProceed, addBlockToBody, setCurrentSection
     ]);
 
