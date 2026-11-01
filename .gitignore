@@ -1,0 +1,30 @@
+# Dependencies
+frontend/node_modules/
+node_modules/
+
+# Production builds
+frontend/build/
+build/
+
+# Uploads & local binaries
+uploads/*
+!uploads/.gitkeep
+
+# Environment & configs
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs & caches
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.eslintcache
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
