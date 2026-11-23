@@ -9,7 +9,7 @@ import React, { lazy } from 'react';
 export async function getHeadersRegistry() {
   const headerRegistry = {};
   try {
-    const response = await fetch('http://localhost/project_3999/api/get_blocks.php');
+    const response = await fetch('http://localhost:5000/api/blocks');
     if (!response.ok) {
       throw new Error('Failed to fetch blocks from the API');
     }
@@ -50,3 +50,4 @@ export async function getHeadersRegistry() {
 // Export a default empty object to avoid import errors before it's populated.
 const headerRegistry = {};
 export default headerRegistry;
+

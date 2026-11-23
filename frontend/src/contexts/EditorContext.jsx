@@ -69,9 +69,9 @@ export const EditorProvider = ({ children, showAlert: externalShowAlert }) => {
                   pagesRes, blocksRes, brandingRes,
                   loadedHeadersRegistry, loadedHeroRegistry, loadedAboutUsRegistry, loadedServicesRegistry
                 ] = await Promise.all([
-                    fetch('http://localhost/project_3999/api/get_pages.php'),
-                    fetch('http://localhost/project_3999/api/get_blocks.php'),
-                    fetch('http://localhost/project_3999/api/get_user_data.php'),
+                    fetch('http://localhost:5000/api/pages'),
+                    fetch('http://localhost:5000/api/blocks'),
+                    fetch('http://localhost:5000/api/tenant/profile'),
                     getHeadersRegistry(),
                     getHeroRegistry(),
                     getAboutUsRegistry(),
@@ -391,6 +391,7 @@ export const EditorProvider = ({ children, showAlert: externalShowAlert }) => {
     
     return <EditorContext.Provider value={value}>{children}</EditorContext.Provider>;
 };
+
 
 
 

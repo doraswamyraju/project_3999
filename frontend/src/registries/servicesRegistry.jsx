@@ -9,7 +9,7 @@ import React, { lazy } from 'react';
 export async function getServicesRegistry() {
   const servicesRegistry = {};
   try {
-    const response = await fetch('http://localhost/project_3999/api/get_blocks.php');
+    const response = await fetch('http://localhost:5000/api/blocks');
     if (!response.ok) {
       throw new Error('Failed to fetch blocks from the API');
     }
@@ -43,3 +43,4 @@ export async function getServicesRegistry() {
 
 const servicesRegistry = {};
 export default servicesRegistry;
+

@@ -28,7 +28,7 @@ export default function AdminDashboard() {
     const fetchBlocks = async () => {
         setIsLoading(true);
         try {
-            const res = await fetch('http://localhost/project_3999/api/get_blocks.php');
+            const res = await fetch('http://localhost:5000/api/blocks');
             const data = await res.json();
             if (data.success) {
                 setBlocks(data.data);
@@ -52,7 +52,7 @@ export default function AdminDashboard() {
     const toggleVisibility = async (block) => {
         const newVis = block.is_visible ? 0 : 1;
         try {
-            const res = await fetch('http://localhost/project_3999/api/set_block_visibility.php', {
+            const res = await fetch('http://localhost:5000/api/blocks/visibility', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ blockId: block.id, isVisible: newVis })
@@ -72,7 +72,7 @@ export default function AdminDashboard() {
         if (!name.trim()) return;
 
         try {
-            const res = await fetch('http://localhost/project_3999/api/save_block.php', {
+            const res = await fetch('http://localhost:5000/api/blocks/save', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -293,4 +293,5 @@ export default function AdminDashboard() {
         </div>
     );
 }
+
 

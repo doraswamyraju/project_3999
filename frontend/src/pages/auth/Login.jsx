@@ -16,7 +16,7 @@ export default function Login() {
         setIsLoading(true);
 
         try {
-            const res = await fetch('http://localhost/project_3999/api/login.php', {
+            const res = await fetch('http://localhost:5000/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
@@ -139,4 +139,5 @@ export default function Login() {
         </div>
     );
 }
+
 

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useEditor } from '../../contexts/EditorContext';
 import { useAuth } from '../../contexts/AuthContext';
 import Spinner from '../Spinner';
-import { LogOut } from 'lucide-react';
+import ProfileSettingsModal from '../ProfileSettingsModal';
+import { LogOut, Sliders } from 'lucide-react';
 
 // --- INLINE SVG ICONS ---
 const Icon = ({ path, className = "w-6 h-6" }) => (
@@ -28,7 +29,8 @@ const pageIcons = {
 
 function Sidebar({ isCollapsed, onMouseEnter, onMouseLeave }) {
   const { pages, isInitialLoading, apiError, currentPage, handleSetCurrentPage } = useEditor();
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const renderContent = () => {
     if (isInitialLoading) {
@@ -71,36 +73,55 @@ function Sidebar({ isCollapsed, onMouseEnter, onMouseLeave }) {
   };
 
   return (
-    <aside
-      className="h-screen bg-gray-900 text-white flex flex-col transition-all duration-300 ease-in-out z-50 shadow-lg"
-      style={{ width: isCollapsed ? '5rem' : '16rem' }}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
-      <div className="p-4 flex items-center justify-between h-16 border-b border-gray-800 flex-shrink-0 px-5">
-        <h2 className={`text-xl font-bold transition-opacity whitespace-nowrap duration-200 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}>
-          Pages
-        </h2>
-      </div>
+    <>
+      <aside
+        className="h-screen bg-gray-900 text-white flex flex-col transition-all duration-300 ease-in-out z-40 shadow-lg"
+        style={{ width: isCollapsed ? '5rem' : '16rem' }}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
+        <div className="p-4 flex items-center justify-between h-16 border-b border-gray-800 flex-shrink-0 px-5">
+          <h2 className={`text-xl font-bold transition-opacity whitespace-nowrap duration-200 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}>
+            Pages
+          </h2>
+        </div>
 
-      <nav className="flex-1 overflow-y-auto">
-        {renderContent()}
-      </nav>
+        <nav className="flex-1 overflow-y-auto">
+          {renderContent()}
+        </nav>
 
-      {/* User info and Logout in sidebar bottom */}
-      <div className="p-3 border-t border-gray-800 flex-shrink-0">
-        <button
-          onClick={logout}
-          title="Sign out"
-          className="w-full flex items-center h-11 px-3 text-red-400 hover:bg-red-950/40 rounded-xl transition-colors text-xs font-semibold"
-        >
-          <LogOut className="w-5 h-5 flex-shrink-0" />
-          <span className={`ml-3 transition-opacity whitespace-nowrap duration-200 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}>
-            Sign Out
-          </span>
-        </button>
-      </div>
-    </aside>
+        {/* Action Controls in sidebar bottom */}
+        <div className="p-3 border-t border-gray-800 flex-shrink-0 space-y-1.5">
+          <button
+            onClick={() => setIsProfileOpen(true)}
+            title="Profile & Catalog Settings"
+            className="w-full flex items-center h-11 px-3 text-indigo-300 hover:bg-indigo-950/40 rounded-xl transition-colors text-xs font-semibold"
+          >
+            <Sliders className="w-5 h-5 flex-shrink-0 text-indigo-400" />
+            <span className={`ml-3 transition-opacity whitespace-nowrap duration-200 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}>
+              Business Profile
+            </span>
+          </button>
+
+          <button
+            onClick={logout}
+            title="Sign out"
+            className="w-full flex items-center h-11 px-3 text-red-400 hover:bg-red-950/40 rounded-xl transition-colors text-xs font-semibold"
+          >
+            <LogOut className="w-5 h-5 flex-shrink-0" />
+            <span className={`ml-3 transition-opacity whitespace-nowrap duration-200 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}>
+              Sign Out
+            </span>
+          </button>
+        </div>
+      </aside>
+
+      {/* Profile & Catalog Settings Modal */}
+      <ProfileSettingsModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+      />
+    </>
   );
 }
 

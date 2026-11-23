@@ -34,7 +34,7 @@ export const TenantProvider = ({ children, initialTenantData }) => {
             setIsLoading(true);
             try {
                 const userId = user?.id || 1;
-                const res = await fetch(`http://localhost/project_3999/api/get_tenant_profile.php?user_id=${userId}`);
+                const res = await fetch(`http://localhost:5000/api/tenant/profile?user_id=${userId}`);
                 const result = await res.json();
 
                 if (result.success && result.data) {
@@ -86,4 +86,5 @@ export const TenantProvider = ({ children, initialTenantData }) => {
         </TenantContext.Provider>
     );
 };
+
 
